@@ -10,7 +10,7 @@ from cpu import Lc3Cpu, ExecutionHalted
 
 
 LOG_DUMP = []       # append debug messages here
-MEMORY = array.array('H', range(0))     # populated when ROM loaded
+MEMORY = array.array('H', range(0))     # populated in load_rom_image
 CPU = Lc3Cpu(MEMORY)
 
 
