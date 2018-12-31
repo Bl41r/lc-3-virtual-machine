@@ -14,7 +14,7 @@ PC_START = 0x3000
 RPC_REG_INDEX = 8
 RCOND_REG_INDEX = 9
 
-_mem_REGISTERS = {
+MEM_REGISTERS = {
     'MR_KBSR': 0xFE00,
     'MR_KBDR': 0xFE02
 }
@@ -90,11 +90,11 @@ class Lc3Cpu(object):
 
     def _mem_read(self, address):
         """Read address in MEMORY."""
-        if (address == ushort(_mem_REGISTERS['MR_KBSR'])):
+        if (address == ushort(MEM_REGISTERS['MR_KBSR'])):
             key = self._check_key()
             if (key):
-                self.memory[_mem_REGISTERS['MR_KBSR']] = (1 << 15)
-                self.memory[_mem_REGISTERS['MR_KBDR']] = key
+                self.memory[MEM_REGISTERS['MR_KBSR']] = (1 << 15)
+                self.memory[MEM_REGISTERS['MR_KBDR']] = key
             else:
                 self.memory['MR_KBSR'] = 0
         return self.memory[address]
