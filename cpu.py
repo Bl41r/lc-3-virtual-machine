@@ -31,7 +31,7 @@ class Lc3Cpu(object):
     def __init__(self, memory):
         """Initialize cpu with a pointer to memory."""
         self.memory = memory
-        
+
         # registers: r0 - r7, r_pc, r_cond
         self.registers = [0, 0, 0, 0, 0, 0, 0, 0, PC_START, 0]
         self.getch = getch._Getch()
@@ -58,18 +58,6 @@ class Lc3Cpu(object):
         """Execute an instruction."""
         self._opcodes[instruction >> 12][1](instruction)
 
-    @staticmethod
-    def ushort(val):
-        """Return unsigned short value."""
-        return ctypes.c_ushort(val).value
-
-    def _sign_extend(self, x, bit_count):
-        """Extend number of bits for positive or negative x."""
-        tmp = x >> (bit_count - 1) & 1
-        if (tmp):
-            x = self.ushort(x | (0xFFFF << bit_count))
-        return x
-
     def mem_read(self, address):
         """Read address in MEMORY."""
         if (address == self.ushort(MEM_REGISTERS['MR_KBSR'])):
@@ -84,6 +72,18 @@ class Lc3Cpu(object):
     def mem_write(self, address, val):
         """Write val to address in MEMORY."""
         self.memory[address] = val
+
+    @staticmethod
+    def ushort(val):
+        """Return unsigned short value."""
+        return ctypes.c_ushort(val).value
+
+    def _sign_extend(self, x, bit_count):
+        """Extend number of bits for positive or negative x."""
+        tmp = x >> (bit_count - 1) & 1
+        if (tmp):
+            x = self.ushort(x | (0xFFFF << bit_count))
+        return x
 
     def _get_char(self):
         """Get one char."""
@@ -197,7 +197,6 @@ class Lc3Cpu(object):
         """STORE REGISTER opcode."""
         r0 = (instruction >> 9) & 0x7
         r1 = (instruction >> 6) & 0x7
-        tmp = instruction & 0x3F
         offset = self._sign_extend(instruction & 0x3F, 6)
         reg_with_offset = self.ushort(self.registers[r1] + offset)
         self.mem_write(reg_with_offset, self.registers[r0])
