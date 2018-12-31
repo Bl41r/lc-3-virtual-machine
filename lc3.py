@@ -1,9 +1,12 @@
-"""LC-3 Virtual Machine."""
+"""LC-3 Virtual Machine.
+
+A Python implementation of an LC-3 virtual machine, following along with the
+tutorial (written in C) at https://justinmeiners.github.io/lc3-vm/index.html
+"""
 
 import sys
 import array
-from cpu import Lc3Cpu, ExecutionHalted
-from cpu import RPC_REGISTER_INDEX
+from cpu import Lc3Cpu, ExecutionHalted, RPC_REGISTER_INDEX
 
 
 LOG_DUMP = []       # append debug messages here
@@ -35,14 +38,9 @@ def execute():
 
 def execute_one_cycle():
     """Execute one operation cycle."""
-    rpc = CPU.registers[RPC_REGISTER_INDEX]     # get current program counter
-
-    CPU.registers[RPC_REGISTER_INDEX] = Lc3Cpu.ushort(
-        CPU.registers[RPC_REGISTER_INDEX] + 1)      # increment program counter
-
-    instruction = CPU.mem_read(rpc)     # get full instruction
-
-    CPU.execute_instruction(instruction)
+    rpc = CPU.registers[RPC_REGISTER_INDEX]     # get current rpc
+    CPU.increment_rpc()                     # increment rpc
+    CPU.execute_instruction(CPU.mem_read(rpc))  # execute instruction @ rpc
 
 
 def load_rom_image(filename):

@@ -66,6 +66,12 @@ class Lc3Cpu(object):
         """Execute an instruction."""
         self._opcodes[instruction >> 12][1](instruction)
 
+    def increment_rpc(self):
+        """Increment rpc."""
+        self.registers[RPC_REGISTER_INDEX] = self.ushort(
+            self.registers[RPC_REGISTER_INDEX] + 1
+        )
+
     def mem_read(self, address):
         """Read address in MEMORY."""
         if (address == self.ushort(MEM_REGISTERS['MR_KBSR'])):
