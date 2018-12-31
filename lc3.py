@@ -51,10 +51,8 @@ def load_rom_image(filename):
     origin = rom_array[0]
     for i in range(origin):
         MEMORY.append(0)
-
     for i in range(1, len(rom_array)):  # Don't need to append origin
         MEMORY.append(rom_array[i])
-
     for i in range((2**16) - len(MEMORY)):
         MEMORY.append(0)
 
