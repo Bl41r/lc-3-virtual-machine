@@ -39,37 +39,27 @@ def execute():
 
 
 def load_rom_image(filename):
-    """Load a ROM image into MEMORY.
-
-    TODO: Refactor to read image once. (cp ROM to array, then build new array)
-    """
-    print("Loading " + filename)
-
-    # find the origin (address in memory array to start loading the rom)
-    # the origin is the first 16-bit word in the image
-    origin_array = array.array('H', range(1))
+    """Load a ROM image into MEMORY."""
+    print("Loading rom: " + filename + "\n")
+    rom_array = array.array('H', range(0))
     with open(filename, 'rb') as f:
-        origin_array.fromfile(f, 1)
-        if sys.byteorder == "little":
-            origin_array.byteswap()
-    origin = origin_array[1]
+        rom_array.frombytes(f.read())
 
-    # initialize memory array of zeros up to origin-1
-    for i in range(origin - 1):
+    if sys.byteorder == 'little':
+        rom_array.byteswap()
+
+    origin = rom_array[0]
+    for i in range(origin):
         MEMORY.append(0)
 
-    # append unsigned shorts in image to memory array
-    with open(filename, 'rb') as f:
-        MEMORY.frombytes(f.read())
-        MEMORY[origin - 1] = 0      # overwrite this back to 0
-        if sys.byteorder == "little":
-            MEMORY.byteswap()
+    for i in range(1, len(rom_array)):  # Don't need to append origin
+        MEMORY.append(rom_array[i])
 
-    # append zeros to rest of available memory
-    if len(MEMORY) < 2**16:
-        for i in range(2**16 - len(MEMORY)):
-            MEMORY.append(0)
+    for i in range((2**16) - len(MEMORY)):
+        MEMORY.append(0)
 
+
+# Debugging
 
 def dump_logs():
     """Print all messages in LOG_DUMP."""
