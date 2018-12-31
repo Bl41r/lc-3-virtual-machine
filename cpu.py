@@ -29,8 +29,8 @@ def sign_extend(x, bit_count):
     """Extend number of bits for positive or negative x."""
     tmp = x >> (bit_count - 1) & 1
     if (tmp):
-        x = ushort(x | (0xFFFF << bit_count))
-    return x
+        x = x | (0xFFFF << bit_count)
+    return ushort(x)
 
 
 class ExecutionHalted(Exception):
