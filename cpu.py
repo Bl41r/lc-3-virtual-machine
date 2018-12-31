@@ -14,7 +14,7 @@ PC_START = 0x3000
 RPC_REG_INDEX = 8
 RCOND_REG_INDEX = 9
 
-MEM_REGISTERS = {
+_mem_REGISTERS = {
     'MR_KBSR': 0xFE00,
     'MR_KBDR': 0xFE02
 }
@@ -76,29 +76,35 @@ class Lc3Cpu(object):
             0x25: self._trap_halt
         }
 
-    def execute_instruction(self, instruction):
+    def execute_next_instruction(self):
         """Execute an instruction."""
-        self._opcodes[instruction >> 12][1](instruction)
+        curr_rpc = self._get_program_counter()    # get current rpc
+        self._increment_rpc()                     # increment rpc
+        instruction = self._mem_read(curr_rpc)
+        self._opcodes[instruction >> 12][1](instruction)    #execute instr
 
-    def increment_rpc(self):
+    def _increment_rpc(self):
         """Increment rpc."""
         self.registers[RPC_REG_INDEX] = ushort(
             self.registers[RPC_REG_INDEX] + 1)
 
-    def mem_read(self, address):
+    def _mem_read(self, address):
         """Read address in MEMORY."""
-        if (address == ushort(MEM_REGISTERS['MR_KBSR'])):
+        if (address == ushort(_mem_REGISTERS['MR_KBSR'])):
             key = self._check_key()
             if (key):
-                self.memory[MEM_REGISTERS['MR_KBSR']] = (1 << 15)
-                self.memory[MEM_REGISTERS['MR_KBDR']] = key
+                self.memory[_mem_REGISTERS['MR_KBSR']] = (1 << 15)
+                self.memory[_mem_REGISTERS['MR_KBDR']] = key
             else:
                 self.memory['MR_KBSR'] = 0
         return self.memory[address]
 
-    def mem_write(self, address, val):
+    def _mem_write(self, address, val):
         """Write val to address in MEMORY."""
         self.memory[address] = val
+
+    def _get_program_counter(self):
+        return self.registers[RPC_REG_INDEX]
 
     def _get_char(self):
         """Get one char."""
@@ -158,7 +164,7 @@ class Lc3Cpu(object):
         r0 = (instruction >> 9) & 0x7
         pc_offset = sign_extend(instruction & 0x1ff, 9)
         reg_with_offset = ushort(self.registers[RPC_REG_INDEX] + pc_offset)
-        self.registers[r0] = self.mem_read(reg_with_offset)
+        self.registers[r0] = self._mem_read(reg_with_offset)
         self._update_flags(r0)
 
     def _op_st(self, instruction):
@@ -166,7 +172,7 @@ class Lc3Cpu(object):
         r0 = (instruction >> 9) & 0x7
         pc_offset = sign_extend(instruction & 0x1ff, 9)
         address = ushort(self.registers[RPC_REG_INDEX] + pc_offset)
-        self.mem_write(address, self.registers[r0])
+        self._mem_write(address, self.registers[r0])
 
     def _op_jsr(self, instruction):
         """JUMP REGISTER opcode."""
@@ -201,7 +207,7 @@ class Lc3Cpu(object):
         r0 = (instruction >> 9) & 0x7
         r1 = (instruction >> 6) & 0x7
         offset = sign_extend(instruction & 0x3F, 6)
-        self.registers[r0] = self.mem_read(
+        self.registers[r0] = self._mem_read(
             ushort(self.registers[r1] + offset)
         )
         self._update_flags(r0)
@@ -212,7 +218,7 @@ class Lc3Cpu(object):
         r1 = (instruction >> 6) & 0x7
         offset = sign_extend(instruction & 0x3F, 6)
         reg_with_offset = ushort(self.registers[r1] + offset)
-        self.mem_write(reg_with_offset, self.registers[r0])
+        self._mem_write(reg_with_offset, self.registers[r0])
 
     def _op_rti(self, instruction):
         """An unused opcode."""
@@ -229,8 +235,8 @@ class Lc3Cpu(object):
         """LOAD INDIRECT."""
         r0 = (instruction >> 9) & 0x07
         pc_offset = sign_extend(instruction & 0x1ff, 9)
-        self.registers[r0] = self.mem_read(
-            self.mem_read(ushort(
+        self.registers[r0] = self._mem_read(
+            self._mem_read(ushort(
                 self.registers[RPC_REG_INDEX] + pc_offset)
             )
         )

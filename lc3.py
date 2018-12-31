@@ -6,7 +6,7 @@ tutorial (written in C) at https://justinmeiners.github.io/lc3-vm/index.html
 
 import sys
 import array
-from cpu import Lc3Cpu, ExecutionHalted, RPC_REG_INDEX
+from cpu import Lc3Cpu, ExecutionHalted
 
 
 LOG_DUMP = []       # append debug messages here
@@ -19,7 +19,8 @@ def main(filename):
     load_rom_image(filename)
 
     try:
-        execute()
+        while True:
+            CPU.execute_next_instruction()
 
     except ExecutionHalted:     # raised by trap_halt
         print("\nShutting down...")
@@ -28,14 +29,6 @@ def main(filename):
     except (Exception, KeyboardInterrupt) as e:
         dump_logs()
         raise e
-
-
-def execute():
-    """Execute the loaded program."""
-    while True:
-        curr_rpc = CPU.registers[RPC_REG_INDEX]     # get current rpc
-        CPU.increment_rpc()                             # increment rpc
-        CPU.execute_instruction(CPU.mem_read(curr_rpc))  # execute instr @ rpc
 
 
 def load_rom_image(filename):
@@ -51,7 +44,7 @@ def load_rom_image(filename):
     origin = rom_array[0]
     for i in range(origin):     # fill with 0's up to origin address
         MEMORY.append(0)
-    for i in range(1, len(rom_array)):  # skips appending origin address @i=0
+    for i in range(1, len(rom_array)):  # skips appending origin address (@i=0)
         MEMORY.append(rom_array[i])
     for i in range((2**16) - len(MEMORY)):  # fill remaining space with 0's
         MEMORY.append(0)
