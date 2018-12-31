@@ -53,6 +53,14 @@ class Lc3Cpu(object):
             14: ('OP_LEA', self._op_lea),   # load effective address
             15: ('OP_TRAP', self._op_trap)   # execute trap
         }
+        self._traps = {
+            0x20: self._trap_getc,
+            0x21: self._trap_out,
+            0x22: self._trap_puts,
+            0x23: self._trap_in,
+            0x24: self._trap_putsp,
+            0x25: self._trap_halt
+        }
 
     def execute_instruction(self, instruction):
         """Execute an instruction."""
@@ -250,15 +258,7 @@ class Lc3Cpu(object):
     def _op_trap(self, instruction):
         """TRAP opcode."""
         trap_code = instruction & 0xFF
-        traps = {
-            0x20: self._trap_getc,
-            0x21: self._trap_out,
-            0x22: self._trap_puts,
-            0x23: self._trap_in,
-            0x24: self._trap_putsp,
-            0x25: self._trap_halt
-        }
-        traps[trap_code]()
+        self._traps[trap_code]()
 
     def _trap_getc(self):
         """Read a single char."""
