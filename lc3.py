@@ -38,9 +38,9 @@ def execute():
 
 def execute_one_cycle():
     """Execute one operation cycle."""
-    rpc = CPU.registers[RPC_REGISTER_INDEX]     # get current rpc
+    curr_rpc = CPU.registers[RPC_REGISTER_INDEX]     # get current rpc
     CPU.increment_rpc()                     # increment rpc
-    CPU.execute_instruction(CPU.mem_read(rpc))  # execute instruction @ rpc
+    CPU.execute_instruction(CPU.mem_read(curr_rpc))  # execute instruction @rpc
 
 
 def load_rom_image(filename):
