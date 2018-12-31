@@ -251,7 +251,7 @@ class Lc3Cpu(object):
         r1 = (instruction >> 6) & 0x7
         self.registers[RPC_REG_INDEX] = self.registers[r1]
 
-    def _op_res(vinstruction):
+    def _op_res(instruction):
         """Reserved opcode."""
         raise Exception("opcode not implemented!")
 
