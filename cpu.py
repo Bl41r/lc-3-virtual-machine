@@ -29,7 +29,7 @@ class Lc3Cpu(object):
     """LC-3 CPU."""
 
     def __init__(self, memory):
-        """Initialize cpu with a pointer to memory."""
+        """Initialize cpu with a pointer to system memory."""
         self.memory = memory
 
         # registers: r0 - r7, r_pc, r_cond
@@ -69,8 +69,7 @@ class Lc3Cpu(object):
     def increment_rpc(self):
         """Increment rpc."""
         self.registers[RPC_REGISTER_INDEX] = self.ushort(
-            self.registers[RPC_REGISTER_INDEX] + 1
-        )
+            self.registers[RPC_REGISTER_INDEX] + 1)
 
     def mem_read(self, address):
         """Read address in MEMORY."""

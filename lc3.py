@@ -39,10 +39,13 @@ def execute():
 
 
 def load_rom_image(filename):
-    """Load a ROM image into MEMORY."""
+    """Load a ROM image into MEMORY.
+
+    TODO: Refactor to read image once. (cp ROM to array, then build new array)
+    """
     print("Loading " + filename)
 
-    # find the origin (where in memory array to start loading the rom)
+    # find the origin (address in memory array to start loading the rom)
     # the origin is the first 16-bit word in the image
     origin_array = array.array('H', range(1))
     with open(filename, 'rb') as f:
@@ -74,7 +77,7 @@ def dump_logs():
     for item in LOG_DUMP:
         print(item)
     print()
-    # print_mem_map()
+    # print_mem_map()   # print all non-zero values in memory
     print("Registers:", CPU.registers)
 
 
@@ -86,4 +89,7 @@ def print_mem_map():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("usage: python3 lc3.py <rom_filename>")
+        sys.exit(1)
     main(sys.argv[1])
