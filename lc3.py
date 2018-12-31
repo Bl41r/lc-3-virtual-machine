@@ -24,23 +24,6 @@ def main(filename):
         raise e
 
 
-def dump_logs():
-    """Print all messages in LOG_DUMP."""
-    print("\n\nLOG DUMP:")
-    for item in LOG_DUMP:
-        print(item)
-    print()
-    # print_mem_map()
-    print("Registers:", CPU.registers)
-
-
-def print_mem_map():
-    """Print the memory map."""
-    for i in range(2**16):
-        if MEMORY[i] != 0:
-            print("val: {}  index: {}".format(MEMORY[i], i))
-
-
 def execute():
     """Execute the loaded program."""
     while True:
@@ -87,6 +70,23 @@ def load_rom_image(filename):
     if len(MEMORY) < 2**16:
         for i in range(2**16 - len(MEMORY)):
             MEMORY.append(0)
+
+
+def dump_logs():
+    """Print all messages in LOG_DUMP."""
+    print("\n\nLOG DUMP:")
+    for item in LOG_DUMP:
+        print(item)
+    print()
+    # print_mem_map()
+    print("Registers:", CPU.registers)
+
+
+def print_mem_map():
+    """Print the memory map."""
+    for i in range(2**16):
+        if MEMORY[i] != 0:
+            print("val: {}  index: {}".format(MEMORY[i], i))
 
 
 if __name__ == '__main__':
