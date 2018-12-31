@@ -14,11 +14,14 @@ CPU = Lc3Cpu(MEMORY)
 def main(filename):
     """Main."""
     load_rom_image(filename)
+
     try:
         execute()
+
     except ExecutionHalted:     # raised by trap_halt
         print("\nShutting down...")
         sys.exit(0)
+
     except (Exception, KeyboardInterrupt) as e:
         dump_logs()
         raise e
@@ -34,7 +37,7 @@ def execute_one_cycle():
     """Execute one operation cycle."""
     rpc = CPU.registers[RPC_REGISTER_INDEX]     # get current program counter
 
-    CPU.registers[RPC_REGISTER_INDEX] = CPU.ushort(
+    CPU.registers[RPC_REGISTER_INDEX] = Lc3Cpu.ushort(
         CPU.registers[RPC_REGISTER_INDEX] + 1)      # increment program counter
 
     instruction = CPU.mem_read(rpc)     # get full instruction
