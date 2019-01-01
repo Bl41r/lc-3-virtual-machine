@@ -5,7 +5,6 @@ tutorial (written in C) at https://justinmeiners.github.io/lc3-vm/index.html
 """
 
 import sys
-import array
 from memory import Lc3Memory
 from cpu import Lc3Cpu, ExecutionHalted
 
@@ -23,12 +22,12 @@ def main(filename):
         while True:
             cpu.execute_next_instruction()
 
-    except ExecutionHalted:     # raised by trap_halt
+    except ExecutionHalted:     # raised by trap_halt (expected exit)
         print("\nShutting down LC-3 VM...")
         sys.exit(0)
 
     except (Exception, KeyboardInterrupt) as e:
-        dump_logs(memory, cpu)
+        dump_logs(lc3_memory.memory, cpu)
         raise e
 
 
@@ -40,12 +39,12 @@ def dump_logs(memory, cpu):
     for item in LOG_DUMP:
         print(item)
     print()
-    # print_mem_map(memory)   # print all non-zero values in memory
+    # print_mem_map(memory)
     print("Registers:", cpu.registers)
 
 
 def print_mem_map(memory):
-    """Print the memory map."""
+    """Print all non-zero values in memory."""
     for i in range(2**16):
         if memory[i] != 0:
             print("val: {}  index: {}".format(memory[i], i))
