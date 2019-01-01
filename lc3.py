@@ -6,16 +6,18 @@ tutorial (written in C) at https://justinmeiners.github.io/lc3-vm/index.html
 
 import sys
 import array
+from memory import Lc3Memory
 from cpu import Lc3Cpu, ExecutionHalted
 
 
-LOG_DUMP = []       # append debug messages here
+LOG_DUMP = []   # append debug messages here
 
 
 def main(filename):
     """Main."""
-    memory = load_rom_image(filename)
-    cpu = Lc3Cpu(memory)
+    lc3_memory = Lc3Memory()
+    lc3_memory.load_rom_image(filename)
+    cpu = Lc3Cpu(lc3_memory.memory)
 
     try:
         while True:
@@ -28,27 +30,6 @@ def main(filename):
     except (Exception, KeyboardInterrupt) as e:
         dump_logs(memory, cpu)
         raise e
-
-
-def load_rom_image(filename):
-    """Return a memory array with a ROM image loaded."""
-    rom_array = array.array('H', range(0))
-    with open(filename, 'rb') as f:
-        rom_array.frombytes(f.read())
-
-    if sys.byteorder == 'little':
-        rom_array.byteswap()
-
-    origin = rom_array[0]
-    memory = array.array('H', range(0))
-    for i in range(origin):     # fill with 0's up to origin address
-        memory.append(0)
-    for i in range(1, len(rom_array)):  # skips appending origin address (@i=0)
-        memory.append(rom_array[i])
-    for i in range((2**16) - len(memory)):  # fill remaining space with 0's
-        memory.append(0)
-
-    return memory
 
 
 # Debugging
