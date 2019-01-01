@@ -22,7 +22,7 @@ def main(filename):
             cpu.execute_next_instruction()
 
     except ExecutionHalted:     # raised by trap_halt
-        print("\nShutting down...")
+        print("\nShutting down LC-3 VM...")
         sys.exit(0)
 
     except (Exception, KeyboardInterrupt) as e:
@@ -31,8 +31,7 @@ def main(filename):
 
 
 def load_rom_image(filename):
-    """Load a ROM image into memory."""
-    print("Loading rom: " + filename + "\n")
+    """Return a memory array with a ROM image loaded."""
     rom_array = array.array('H', range(0))
     with open(filename, 'rb') as f:
         rom_array.frombytes(f.read())
