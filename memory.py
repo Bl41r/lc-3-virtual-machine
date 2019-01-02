@@ -20,6 +20,14 @@ class Lc3Memory(object):
 	    for i in range(1, len(rom_array)):  # skips appending origin address (@i=0)
 	        self.memory[origin+i] = rom_array[i]
 
+	def write_value(self, address, value):
+		"""Write a value to an address."""
+		self.memory[address] = value
+
+	def read_value(self, address):
+		"""Return a value from memory at an address."""
+		return self.memory[address]
+
 	def _read_rom_file(self, filename):
 	    """Return an array containing ROM file."""
 	    rom_array = array.array('H', range(0))

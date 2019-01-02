@@ -16,7 +16,7 @@ def main(filename):
     """Main."""
     lc3_memory = Lc3Memory()
     lc3_memory.load_rom_image(filename)
-    cpu = Lc3Cpu(lc3_memory.memory)
+    cpu = Lc3Cpu(lc3_memory)
 
     try:
         while True:

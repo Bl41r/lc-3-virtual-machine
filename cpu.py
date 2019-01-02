@@ -91,17 +91,19 @@ class Lc3Cpu(object):
     def _mem_read(self, address):
         """Read address in MEMORY."""
         if (address == ushort(MEM_REGISTERS['MR_KBSR'])):
+
             key = self._check_key()
             if (key):
-                self.memory[MEM_REGISTERS['MR_KBSR']] = (1 << 15)
-                self.memory[MEM_REGISTERS['MR_KBDR']] = key
+                self.memory.write_value(MEM_REGISTERS['MR_KBSR'], ushort(1 << 15))
+                self.memory.write_value(MEM_REGISTERS['MR_KBDR'], key)
             else:
-                self.memory['MR_KBSR'] = 0
-        return self.memory[address]
+                self.memory.write_value('MR_KBSR', 0)
+
+        return self.memory.read_value(address)
 
     def _mem_write(self, address, val):
         """Write val to address in MEMORY."""
-        self.memory[address] = val
+        self.memory.write_value(address, val)
 
     def _get_program_counter(self):
         return self.registers[RPC_REG_INDEX]
@@ -118,7 +120,7 @@ class Lc3Cpu(object):
         #     try:
         #         key = see_if_a_key_is_pressed_down
         #         if key != '':
-        #             return key
+        #             return ushort(key)
         #     except Exception as e:
         #         pass
         return None
@@ -283,8 +285,8 @@ class Lc3Cpu(object):
     def _trap_puts(self):
         """Write to stdout."""
         current_location = self.registers[0]
-        while self.memory[current_location]:
-            char_code = self.memory[current_location]
+        while self.memory.read_value(current_location):
+            char_code = self.memory.read_value(current_location)
             print(chr(char_code), end='')
             current_location = ushort(current_location + 1)
         sys.stdout.flush()
