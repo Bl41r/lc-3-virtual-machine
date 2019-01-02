@@ -9,7 +9,7 @@ class Lc3Memory(object):
 
 	def __init__(self):
 		self.mem_size = 2**16	# The LC-3 spec has 2^16 16-bit unsigned integers
-		self.memory = array.array('H', range(self.mem_size))
+		self.memory = array.array('H', [0 for i in range(self.mem_size)])
 		
 	def load_rom_image(self, filename):
 	    """Load a ROM image into memory."""
