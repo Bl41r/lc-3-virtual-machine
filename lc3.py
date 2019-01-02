@@ -1,6 +1,6 @@
 """LC-3 Virtual Machine.
 
-A Python implementation of an LC-3 virtual machine, following along with the
+A Python implementation of an LC-3 virtual machine, based on the
 tutorial (written in C) at https://justinmeiners.github.io/lc3-vm/index.html
 """
 

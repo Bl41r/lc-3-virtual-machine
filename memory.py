@@ -8,6 +8,7 @@ class Lc3Memory(object):
 	"""Memory of the LC-3 VM."""
 
 	def __init__(self):
+		# The LC-3 spec has 2^16 16-bit unsigned integers
 		self.mem_size = 2**16
 		self.memory = array.array('H', range(self.mem_size))
 		
