@@ -1,8 +1,9 @@
 """LC-3 self."""
 
 import ctypes
-import getch
 import sys
+import getch
+
 
 FLAGS = {
     'FL_POS': 1 << 0,
@@ -81,7 +82,7 @@ class Lc3Cpu(object):
         curr_rpc = self._get_program_counter()    # get current rpc
         self._increment_rpc()                     # increment rpc
         instruction = self._mem_read(curr_rpc)
-        self._opcodes[instruction >> 12][1](instruction)    #execute instr
+        self._opcodes[instruction >> 12][1](instruction)   # execute instr
 
     def _increment_rpc(self):
         """Increment rpc."""
@@ -114,7 +115,7 @@ class Lc3Cpu(object):
 
     def _check_key():
         """Check if a key is being pressed I think..."""
-        key = ""
+        # key = ""
         raise Exception("called check key, not implemented")
         # for i in range(1000):
         #     try:
@@ -123,7 +124,7 @@ class Lc3Cpu(object):
         #             return ushort(key)
         #     except Exception as e:
         #         pass
-        return None
+        # return None
 
     def _update_flags(self, register_index):
         """Update rcond register."""
@@ -138,15 +139,16 @@ class Lc3Cpu(object):
     # Opcodes
     def _op_add(self, instruction):
         """ADD opcode."""
-        r0 = (instruction >> 9) & 0x7
-        r1 = (instruction >> 6) & 0x7
+        # bitwise & selects number of bits
+        r0 = (instruction >> 9) & 0x7       # DR
+        r1 = (instruction >> 6) & 0x7       # SR1
         imm_flag = (instruction >> 5) & 0x1
 
         if (imm_flag):
             imm5 = sign_extend(instruction & 0x1F, 5)
             self.registers[r0] = ushort(self.registers[r1] + imm5)
         else:
-            r2 = instruction & 0x7
+            r2 = instruction & 0x7      # SR2
             self.registers[r0] = ushort(
                 self.registers[r1] + self.registers[r2]
             )
@@ -253,7 +255,7 @@ class Lc3Cpu(object):
         r1 = (instruction >> 6) & 0x7
         self.registers[RPC_REG_INDEX] = self.registers[r1]
 
-    def _op_res(instruction):
+    def _op_res(self, instruction):
         """Reserved opcode."""
         raise Exception("opcode not implemented!")
 
